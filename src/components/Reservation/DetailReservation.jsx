@@ -41,6 +41,14 @@ export function DetailReservation() {
       });
   }, [routeParams.id]);
 
+
+  let totalHabitaciones = 0;
+  let totalComplementos = 0;
+  let subTotal = 0;
+  let impuesto = 0;
+  let total = 0;
+
+
   if (!loaded) return <p>Cargando...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
@@ -52,7 +60,7 @@ export function DetailReservation() {
 
           <Typography component="span" variant="subtitle1" display="block">
               <Box fontWeight="bold" display="inline">
-              Crucero: {data.name}
+              Crucero: {data.cruise.name}
               </Box>{' '}
             </Typography>
 
@@ -64,18 +72,7 @@ export function DetailReservation() {
 
             <Typography component="span" variant="subtitle1" display="block">
               <Box fontWeight="bold" display="inline">
-                Barco: {data.shipw}
-              </Box>{' '}
-            </Typography>
-
-
-
-
-
-
-            <Typography component="span" variant="subtitle1" display="block">
-              <Box fontWeight="bold" display="inline">
-              Puerto: {data.destinationId}
+                Nombre del barco: {data.cruise.ship.name}
               </Box>{' '}
             </Typography>
 
@@ -91,10 +88,52 @@ export function DetailReservation() {
               </Box>{' '}
             </Typography>
 
+            <Typography component="span" variant="subtitle1">
+              <Box fontWeight="bold">Puertos:</Box>
+              <List
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  bgcolor: 'background.paper',
+                }}
+              >
+                {data.cruise.port.map((item) => (
+                  <ListItemButton key={item.id}>
+                    <ListItemIcon>
+                      <ArrowRightIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={item.name} />
+                    <ListItemText primary={`Hora de salida: ${item.horaSalida} AM`} />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Typography>
+
             <Typography component="span" variant="subtitle1" display="block">
               <Box fontWeight="bold" display="inline">
               Total de habitaciones: {data.destinationId}
               </Box>{' '}
+            </Typography>
+
+            <Typography component="span" variant="subtitle1">
+              <Box fontWeight="bold">Habitación(es):</Box>
+              <List
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  bgcolor: 'background.paper',
+                }}
+              >
+                {data.cruise.room.map((item) => (
+                  <ListItemButton key={item.id}>
+                    <ListItemIcon>
+                      <ArrowRightIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={`Nombre: ${item.name}`} />
+                    <ListItemText primary={`Precio: $${item.price}`} />
+                  </ListItemButton>
+                ))}
+              </List>
             </Typography>
 
             <Typography component="span" variant="subtitle1" display="block">
@@ -131,6 +170,87 @@ export function DetailReservation() {
             <Typography component="span" variant="subtitle1" display="block">
               <Box fontWeight="bold" display="inline">
               Pendiente?: {data.destinationId}
+              console.log(data); 
+              </Box>{' '}
+            </Typography>
+
+
+
+
+
+
+            <Typography component="span" variant="subtitle1">
+      <Box fontWeight="bold">Habitación(es):</Box>
+      <List
+        sx={{
+          width: '100%',
+          maxWidth: 360,
+          bgcolor: 'background.paper',
+        }}
+      >
+        {data.cruise.room.map((item) => {
+          totalHabitaciones += parseFloat(item.price); // Convertir el precio a número antes de sumarlo
+          return (
+            <ListItemButton key={item.id}>
+              <ListItemIcon>
+                <ArrowRightIcon />
+              </ListItemIcon>
+              <ListItemText primary={`Nombre: ${item.name}`} />
+              <ListItemText primary={`Precio: $${item.price}`} />
+            </ListItemButton>
+          );
+        })}
+      </List>
+      {/* Mostrar el total por habitaciones */}
+      <Box fontWeight="bold">Pago total por habitaciones: ${totalHabitaciones}</Box>
+    </Typography>
+
+
+
+
+            <Typography component="span" variant="subtitle1">
+      <Box fontWeight="bold">Complemento(s):</Box>
+      <List
+        sx={{
+          width: '100%',
+          maxWidth: 360,
+          bgcolor: 'background.paper',
+        }}
+      >
+        {data.cruise.addon.map((item) => {
+          totalComplementos += parseFloat(item.price); // Convertir el precio a número antes de sumarlo
+          return (
+            <ListItemButton key={item.id}>
+              <ListItemIcon>
+                <ArrowRightIcon />
+              </ListItemIcon>
+              <ListItemText primary={`Nombre: ${item.name}`} />
+              <ListItemText primary={`Precio: $${item.price}`} />
+            </ListItemButton>
+          );
+        })}
+      </List>
+      {/* Mostrar el total por habitaciones */}
+      <Box fontWeight="bold">Pago total de complementos es: ${totalComplementos}</Box>
+    </Typography>
+
+
+            <Typography component="span" variant="subtitle1" display="block">
+              <Box fontWeight="bold" display="inline">
+              Subtotal: ${subTotal = totalComplementos + totalHabitaciones}
+              </Box>{' '}
+            </Typography>
+
+
+            <Typography component="span" variant="subtitle1" display="block">
+              <Box fontWeight="bold" display="inline">
+              Total de impuestos: ${impuesto = subTotal * 0.13}
+              </Box>{' '}
+            </Typography>
+
+            <Typography component="span" variant="subtitle1" display="block">
+              <Box fontWeight="bold" display="inline">
+              Total: ${subTotal + impuesto}
               </Box>{' '}
             </Typography>
 
